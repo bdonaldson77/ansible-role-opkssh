@@ -1,0 +1,20 @@
+---
+# defaults file for opkssh
+setup_home_policy: true
+
+# AuthorizedKeysCommand user
+auth_cmd_user: opksshuser
+auth_cmd_group: opksshuser
+
+# Use the latest release
+opkssh_version: 'latest'
+
+# Alternatively, set a specific version
+# See available releases: https://github.com/openpubkey/opkssh/releases/
+# opkssh_version: '0.3.0'
+
+opkssh_arch: 'amd64'
+opkssh_download_url: "https://github.com/openpubkey/opkssh/releases/download/v{{ opkssh_version }}/opkssh-linux-{{ opkssh_arch }}"
+
+opkssh_bin_path: /usr/local/bin/opkssh
+sudoers_path: /etc/sudoers.d/opkssh

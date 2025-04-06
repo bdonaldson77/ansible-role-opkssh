@@ -1,0 +1,20 @@
+---
+- name: Determine latest GitHub release (local)
+  delegate_to: localhost
+  become: false
+  uri:
+    url: "https://api.github.com/repos/openpubkey/opkssh/releases/latest"
+    body_format: json
+  register: _github_release
+  until: _github_release.status == 200
+  run_once: true
+  retries: 5
+
+- name: Set opkssh_version
+  set_fact:
+    opkssh_version: "{{ _github_release.json.tag_name
+      | regex_replace('^v?([0-9\\.]+)$', '\\1') }}"
+
+- name: Set opkssh_download_url
+  set_fact:
+    opkssh_download_url: "https://github.com/openpubkey/opkssh/releases/download/v{{ opkssh_version }}/opkssh-linux-{{ opkssh_arch }}"

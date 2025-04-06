@@ -1,0 +1,97 @@
+---
+# tasks for opkssh
+- name: Check current opkssh version.
+  command: "{{ opkssh_bin_path }} --version"
+  failed_when: false
+  changed_when: false
+  register: opkssh_version_check
+
+- name: Configure latest version
+  include_tasks: config-version.yaml
+  when: >
+    opkssh_version is match("latest")
+    or opkssh_version is not defined
+
+- name: Download and move opkssh into temporary location.
+  get_url:
+    url: "{{ opkssh_download_url }}"
+    dest: "/tmp/opkssh-linux-{{ opkssh_arch }}"
+    mode: 0755
+  when: >
+    opkssh_version_check.stdout is not defined
+    or opkssh_version not in opkssh_version_check.stdout
+  register: opkssh_download_check
+
+- name: Move opkssh binary into place.
+  copy:
+    src: "/tmp/opkssh-linux-{{ opkssh_arch }}"
+    dest: "{{ opkssh_bin_path }}"
+    mode: 0755
+    remote_src: true
+  notify: restart ssh
+  when: >
+    opkssh_download_check is changed
+    or opkssh_version_check.stdout | length == 0
+
+- name: Create opkssh group.
+  user:
+    name: "{{ auth_cmd_group }}"
+    state: present
+
+- name: Create opkssh user.
+  user:
+    name: "{{ auth_cmd_user }}"
+    shell: /sbin/nologin
+    create_home: false
+    state: present
+    group: "{{ auth_cmd_group }}"
+
+## Setup configuration
+- name: Create opkssh operational directory.
+  file:
+    path: /etc/opk
+    state: directory
+    mode: '0755'
+
+- name: Create opkssh auth file.
+  file:
+    path: /etc/opk/auth_id
+    state: touch
+    owner: root
+    group: "{{ auth_cmd_group }}"
+    mode: '0640'
+
+- name: Check for existence of providers file.
+  ansible.builtin.stat:
+    path: /etc/opk/providers
+  register: provider
+
+- name: Create opkssh providers file for first run.
+  ansible.builtin.copy:
+    src: files/providers
+    dest: /etc/opk/providers
+    owner: root
+    group: "{{ auth_cmd_group }}"
+    mode: '0640'
+  when: provider.stat.exists == false
+
+- name: Configure AuthorizedKeys command and user to enable opkssh.
+  ansible.builtin.blockinfile:
+    path: /etc/ssh/sshd_config
+    append_newline: true
+    prepend_newline: true
+    block: |
+      AuthorizedKeysCommand /usr/local/bin/opkssh verify %u %k %t
+      AuthorizedKeysCommandUser {{ auth_cmd_user }} 
+  notify:
+      - restart ssh
+
+- name: Create sudoers file.
+  ansible.builtin.copy:
+    src: files/sudoers
+    dest: "{{ sudoers_path }}"
+    owner: root
+    group: "{{ auth_cmd_group }}"
+    mode: '0440'
+  when: setup_home_policy
+  become: true

@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: "Include bdonaldson77.opkssh"
+      ansible.builtin.include_role:
+        name: "bdonaldson77.opkssh"

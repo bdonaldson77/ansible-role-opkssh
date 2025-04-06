@@ -1,0 +1,13 @@
+---
+engine:
+  name: docker
+
+provisioner:
+  name: ansible
+
+verifier:
+  name: goss
+
+instances:
+  - name: ubuntu-systemd
+    image: bdonaldson77/ubuntu-systemd:24.04

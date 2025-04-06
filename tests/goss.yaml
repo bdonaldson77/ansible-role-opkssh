@@ -1,0 +1,23 @@
+file:
+  /etc/opk:
+    exists: true
+    mode: "0755"
+    owner: root
+    group: root
+    filetype: directory
+  /usr/local/bin/opkssh:
+    exists: true
+    mode: "0755"
+    filetype: file
+  /etc/opk/auth_id:
+    exists: true
+    mode: "0640"
+    filetype: file
+  /etc/opk/providers:
+    exists: true
+    mode: "0640"
+    filetype: file
+  /etc/ssh/sshd_config:
+    exists: true
+    contents:
+      - "AuthorizedKeysCommand /usr/local/bin/opkssh verify %u %k %t"
