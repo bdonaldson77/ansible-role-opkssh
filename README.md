@@ -1,22 +1,27 @@
 opkssh
 =========
 
-A brief description of the role goes here.
+A simple role to install [opkssh](https://github.com/openpubkey/opkssh) on a linux machine.
+
+This repo is not affiliated with opkssh or its original authors, I just wanted to write it to install opkssh on my homelab.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+See `[requirements.yaml] for required collections.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+`setup_home_policy`: Whether or not to allow opkssh see policy files in user's home directory. Default: `true`
 
-Dependencies
-------------
+`auth_cmd_user`: User to be created to run opkssh and do the AuthorizedKeysCommandUser lookup with. Default: `opksshuser`
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+`auth_cmd_group`: Group to add the `auth_cmd_user` to. This group owns all the config files and directories opkssh needs. Default: `opksshuser`
+
+`opkssh_version`: Version of opkssh to install. When set to `latest`, this role will check the opkssh GitHub repo for the latest release and use that version. Default: `latest`
+
+`opkssh_arch`: The platform architecture for downloading the relevant opkssh executable. Default: `amd64`
 
 Example Playbook
 ----------------
@@ -25,14 +30,10 @@ Including an example of how to use your role (for instance, with variables passe
 
     - hosts: servers
       roles:
-         - { role: username.rolename, x: 42 }
+         - { role: bdonaldson77.opkssh, opkssh_arch: 'arm64' }
 
 License
 -------
 
 Apache 2.0
 
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
