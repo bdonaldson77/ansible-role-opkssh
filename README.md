@@ -1,7 +1,7 @@
 opkssh
 =========
 
-A simple role to install [opkssh](https://github.com/openpubkey/opkssh) on a linux machine.
+A simple role to install [opkssh](https://github.com/openpubkey/opkssh) on a linux machine and configure it as an SSH auth source.
 
 This repo is not affiliated with opkssh or its original authors, I just wanted to write it to install opkssh on my homelab.
 
@@ -9,6 +9,16 @@ Requirements
 ------------
 
 See [requirements.yaml](./requirements.yml) for required collections.
+
+Supported Platforms
+-------------------
+
+### Server support
+
+| OS           | Supported | Tested | Version Tested       | 
+| --           | --------- | ------ | --------------       | 
+| Ubuntu x86   | ✅        | ✅     |  Ubuntu 22.04.5 LTS  |
+| Ubuntu arm64 | ✅        | ✅     |  Ubuntu 22.04.5 LTS  |
 
 Role Variables
 --------------
