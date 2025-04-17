@@ -8,7 +8,7 @@ This repo is not affiliated with opkssh or its original authors, I just wanted t
 Requirements
 ------------
 
-See `[requirements.yaml] for required collections.
+See [requirements.yaml](./requirements.yml) for required collections.
 
 Role Variables
 --------------
